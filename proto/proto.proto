@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "pb/";
+
+message Image {
+  repeated bytes value = 1;
+}
+
+enum Status {
+  Ok = 0;
+  Err = 1;
+}
+
+service ImageService {
+  rpc Produce(ProduceRequest) returns (ProduceResponse) {}
+}
+
+message ProduceRequest {
+  Image img = 1;
+}
+
+message ProduceResponse {
+  Status status  = 1;
+}
