@@ -3,7 +3,7 @@ syntax = "proto3";
 option go_package = "pb/";
 
 message Image {
-  repeated bytes value = 1;
+  repeated uint32 value = 1;
 }
 
 enum Status {
