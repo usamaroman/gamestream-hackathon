@@ -6,7 +6,7 @@ from proto.proto_pb2 import Image, ProduceRequest
 
 app = FastAPI()
 
-client = ImageServiceStub(channel=grpc.insecure_channel("localhost:50051"))
+client = ImageServiceStub(channel=grpc.insecure_channel("localhost:8001"))
 
 def produce(image : list):
     client.Produce(ProduceRequest(img=Image(value=image)))

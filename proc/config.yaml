@@ -1,0 +1,6 @@
+port: 8001
+minio:
+  host: localhost
+  port: 9000
+  user: minio
+  password: minio123
