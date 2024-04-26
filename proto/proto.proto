@@ -20,5 +20,6 @@ message ProduceRequest {
 }
 
 message ProduceResponse {
-  Status status  = 1;
+  Status status = 1;
+  string image = 2;
 }

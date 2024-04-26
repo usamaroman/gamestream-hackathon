@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"log"
 	"net"
+	"os"
 
 	"proc/pb"
 
@@ -13,6 +15,8 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"google.golang.org/grpc"
 )
+
+const bucketName = "images"
 
 type config struct {
 	Port  string `yaml:"port" env:"PORT" env-default:"8080"`
@@ -55,7 +59,6 @@ func newMinio(cfg *config) *minio.Client {
 		log.Fatal(err)
 	}
 
-	bucketName := "images"
 	location := "BLR"
 	ctx := context.Background()
 
@@ -110,4 +113,54 @@ func (srv *server) logInterceptor(ctx context.Context, req interface{}, info *gr
 	log.Println("post proc message", m)
 
 	return m, err
+}
+
+func (srv *server) Produce(ctx context.Context, req *pb.ProduceRequest) (*pb.ProduceResponse, error) {
+	p := req.Img.Value
+	fileName := uuid.New().String() + ".png"
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	_, err = file.Write(convertToBytes(p))
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer file.Close()
+
+	info, err := srv.minio.FPutObject(ctx, bucketName, fileName, fileName, minio.PutObjectOptions{
+		ContentType: "image/png",
+	})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	log.Println("size", info.Size)
+
+	err = os.Remove(fileName)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &pb.ProduceResponse{
+		Status: pb.Status_Ok,
+		Image:  fileName,
+	}, nil
+}
+
+func convertToBytes(p []uint32) []byte {
+	res := make([]byte, len(p))
+
+	for i, b := range p {
+		res[i] = byte(b)
+	}
+
+	return res
+
 }

@@ -13,13 +13,9 @@ services:
       MINIO_ROOT_PASSWORD: minio123
     volumes:
       - ./minio-storage:/data
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-      interval: 1s
-      timeout: 1s
-      retries: 10
-  
+
   postgres:
+    container_name: postgres
     image: postgres:16-alpine
     restart: always
     ports:
@@ -30,18 +26,20 @@ services:
       POSTGRES_PASSWORD: password
 
   gateway:
+    container_name: gateway
     build:
       context: ./gateway
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     depends_on:
-      postgres:
-        condition: 
-          service_started
-      minio:
-        condition: 
-          service_healthy
+      - postgres
+      - minio
+#        condition:
+#          service_started
+#      minio
+#        condition:
+#          service_healthy
 
   proc:
     container_name: proc
