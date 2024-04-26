@@ -26,7 +26,9 @@ class ProduceRequest(_message.Message):
     def __init__(self, img: _Optional[_Union[Image, _Mapping]] = ...) -> None: ...
 
 class ProduceResponse(_message.Message):
-    __slots__ = ("status",)
+    __slots__ = ("status", "image")
     STATUS_FIELD_NUMBER: _ClassVar[int]
+    IMAGE_FIELD_NUMBER: _ClassVar[int]
     status: Status
-    def __init__(self, status: _Optional[_Union[Status, str]] = ...) -> None: ...
+    image: str
+    def __init__(self, status: _Optional[_Union[Status, str]] = ..., image: _Optional[str] = ...) -> None: ...

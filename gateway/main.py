@@ -2,16 +2,16 @@ import grpc
 import uvicorn
 from fastapi import Depends, FastAPI, File, UploadFile
 from proto.proto_pb2_grpc import ImageServiceStub
-from proto.proto_pb2 import Image, ProduceRequest
+from proto.proto_pb2 import Image, ProduceRequest, ProduceResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
+from database import get_db, Thread
 
 app = FastAPI()
 
 client = ImageServiceStub(channel=grpc.insecure_channel("proc:8001"))
 
 def produce(image : list):
-    client.Produce(ProduceRequest(img=Image(value=image)))
+    return client.Produce(ProduceRequest(img=Image(value=image)))
 
 @app.get("/health")
 async def health():
@@ -19,7 +19,10 @@ async def health():
 
 @app.post("/add_image")
 async def add_image(image: UploadFile = File(), db : AsyncSession = Depends(get_db)):
-    image_name = produce(list(await image.read()))
+    image_name : ProduceResponse = produce(list(await image.read()))
+    print(image_name)
+    db.add(Thread(image=image_name.image))
+    db.commit()
     
 @app.post("/check_image")
 async def check_image():

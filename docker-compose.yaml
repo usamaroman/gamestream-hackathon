@@ -24,6 +24,11 @@ services:
       POSTGRES_DB: hackathone
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+    healthcheck:
+      test: pg_isready -U user -d hackathone
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   gateway:
     container_name: gateway
@@ -33,8 +38,11 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
-      - minio
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+
 
   proc:
     container_name: proc
