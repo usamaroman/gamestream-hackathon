@@ -18,6 +18,16 @@ services:
       interval: 1s
       timeout: 1s
       retries: 10
+  
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: hackathone
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
 
   gateway:
     build:
@@ -26,6 +36,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      postgres:
+        condition: 
+          service_started
       minio:
         condition: 
           service_healthy

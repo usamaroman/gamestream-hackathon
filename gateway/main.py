@@ -19,6 +19,10 @@ async def health():
 async def add_image(image: UploadFile = File()):
     produce(list(await image.read()))
     
+@app.post("/check_image")
+async def check_image():
+    produce([1,2,3,4,5,6,7,8,9,10])
+    
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
