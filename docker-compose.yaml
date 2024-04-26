@@ -15,9 +15,9 @@ services:
       - ./minio-storage:/data
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+      interval: 1s
+      timeout: 1s
+      retries: 10
 
   gateway:
     build:
