@@ -35,11 +35,6 @@ services:
     depends_on:
       - postgres
       - minio
-#        condition:
-#          service_started
-#      minio
-#        condition:
-#          service_healthy
 
   proc:
     container_name: proc
