@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	ImageService_Produce_FullMethodName = "/ImageService/Produce"
+	ImageService_Consume_FullMethodName = "/ImageService/Consume"
 )
 
 // ImageServiceClient is the client API for ImageService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageServiceClient interface {
 	Produce(ctx context.Context, in *ProduceRequest, opts ...grpc.CallOption) (*ProduceResponse, error)
+	Consume(ctx context.Context, in *ConsumeRequest, opts ...grpc.CallOption) (*ConsumeResponse, error)
 }
 
 type imageServiceClient struct {
@@ -46,11 +48,21 @@ func (c *imageServiceClient) Produce(ctx context.Context, in *ProduceRequest, op
 	return out, nil
 }
 
+func (c *imageServiceClient) Consume(ctx context.Context, in *ConsumeRequest, opts ...grpc.CallOption) (*ConsumeResponse, error) {
+	out := new(ConsumeResponse)
+	err := c.cc.Invoke(ctx, ImageService_Consume_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageServiceServer is the server API for ImageService service.
 // All implementations must embed UnimplementedImageServiceServer
 // for forward compatibility
 type ImageServiceServer interface {
 	Produce(context.Context, *ProduceRequest) (*ProduceResponse, error)
+	Consume(context.Context, *ConsumeRequest) (*ConsumeResponse, error)
 	mustEmbedUnimplementedImageServiceServer()
 }
 
@@ -60,6 +72,9 @@ type UnimplementedImageServiceServer struct {
 
 func (UnimplementedImageServiceServer) Produce(context.Context, *ProduceRequest) (*ProduceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Produce not implemented")
+}
+func (UnimplementedImageServiceServer) Consume(context.Context, *ConsumeRequest) (*ConsumeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Consume not implemented")
 }
 func (UnimplementedImageServiceServer) mustEmbedUnimplementedImageServiceServer() {}
 
@@ -92,6 +107,24 @@ func _ImageService_Produce_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ImageService_Consume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsumeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageServiceServer).Consume(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ImageService_Consume_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageServiceServer).Consume(ctx, req.(*ConsumeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +135,10 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Produce",
 			Handler:    _ImageService_Produce_Handler,
+		},
+		{
+			MethodName: "Consume",
+			Handler:    _ImageService_Consume_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
