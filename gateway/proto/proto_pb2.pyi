@@ -32,3 +32,19 @@ class ProduceResponse(_message.Message):
     status: Status
     image: str
     def __init__(self, status: _Optional[_Union[Status, str]] = ..., image: _Optional[str] = ...) -> None: ...
+
+class ConsumeRequest(_message.Message):
+    __slots__ = ("image1", "image2")
+    IMAGE1_FIELD_NUMBER: _ClassVar[int]
+    IMAGE2_FIELD_NUMBER: _ClassVar[int]
+    image1: str
+    image2: str
+    def __init__(self, image1: _Optional[str] = ..., image2: _Optional[str] = ...) -> None: ...
+
+class ConsumeResponse(_message.Message):
+    __slots__ = ("image1", "image2")
+    IMAGE1_FIELD_NUMBER: _ClassVar[int]
+    IMAGE2_FIELD_NUMBER: _ClassVar[int]
+    image1: Image
+    image2: Image
+    def __init__(self, image1: _Optional[_Union[Image, _Mapping]] = ..., image2: _Optional[_Union[Image, _Mapping]] = ...) -> None: ...

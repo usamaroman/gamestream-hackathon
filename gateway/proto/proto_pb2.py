@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bproto.proto\"\x16\n\x05Image\x12\r\n\x05value\x18\x01 \x03(\r\"%\n\x0eProduceRequest\x12\x13\n\x03img\x18\x01 \x01(\x0b\x32\x06.Image\"9\n\x0fProduceResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\r\n\x05image\x18\x02 \x01(\t*\x19\n\x06Status\x12\x06\n\x02Ok\x10\x00\x12\x07\n\x03\x45rr\x10\x01\x32>\n\x0cImageService\x12.\n\x07Produce\x12\x0f.ProduceRequest\x1a\x10.ProduceResponse\"\x00\x42\x05Z\x03pb/b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bproto.proto\"\x16\n\x05Image\x12\r\n\x05value\x18\x01 \x03(\r\"%\n\x0eProduceRequest\x12\x13\n\x03img\x18\x01 \x01(\x0b\x32\x06.Image\"9\n\x0fProduceResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\r\n\x05image\x18\x02 \x01(\t\"0\n\x0e\x43onsumeRequest\x12\x0e\n\x06image1\x18\x01 \x01(\t\x12\x0e\n\x06image2\x18\x02 \x01(\t\"A\n\x0f\x43onsumeResponse\x12\x16\n\x06image1\x18\x01 \x01(\x0b\x32\x06.Image\x12\x16\n\x06image2\x18\x02 \x01(\x0b\x32\x06.Image*\x19\n\x06Status\x12\x06\n\x02Ok\x10\x00\x12\x07\n\x03\x45rr\x10\x01\x32n\n\x0cImageService\x12.\n\x07Produce\x12\x0f.ProduceRequest\x1a\x10.ProduceResponse\"\x00\x12.\n\x07\x43onsume\x12\x0f.ConsumeRequest\x1a\x10.ConsumeResponse\"\x00\x42\x05Z\x03pb/b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,14 +22,18 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'proto_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['DESCRIPTOR']._options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\003pb/'
-  _globals['_STATUS']._serialized_start=137
-  _globals['_STATUS']._serialized_end=162
+  _globals['_STATUS']._serialized_start=254
+  _globals['_STATUS']._serialized_end=279
   _globals['_IMAGE']._serialized_start=15
   _globals['_IMAGE']._serialized_end=37
   _globals['_PRODUCEREQUEST']._serialized_start=39
   _globals['_PRODUCEREQUEST']._serialized_end=76
   _globals['_PRODUCERESPONSE']._serialized_start=78
   _globals['_PRODUCERESPONSE']._serialized_end=135
-  _globals['_IMAGESERVICE']._serialized_start=164
-  _globals['_IMAGESERVICE']._serialized_end=226
+  _globals['_CONSUMEREQUEST']._serialized_start=137
+  _globals['_CONSUMEREQUEST']._serialized_end=185
+  _globals['_CONSUMERESPONSE']._serialized_start=187
+  _globals['_CONSUMERESPONSE']._serialized_end=252
+  _globals['_IMAGESERVICE']._serialized_start=281
+  _globals['_IMAGESERVICE']._serialized_end=391
 # @@protoc_insertion_point(module_scope)

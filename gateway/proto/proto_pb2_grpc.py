@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import proto.proto_pb2 as proto__pb2
+import proto_pb2 as proto__pb2
 
 
 class ImageServiceStub(object):
@@ -19,12 +19,23 @@ class ImageServiceStub(object):
                 request_serializer=proto__pb2.ProduceRequest.SerializeToString,
                 response_deserializer=proto__pb2.ProduceResponse.FromString,
                 )
+        self.Consume = channel.unary_unary(
+                '/ImageService/Consume',
+                request_serializer=proto__pb2.ConsumeRequest.SerializeToString,
+                response_deserializer=proto__pb2.ConsumeResponse.FromString,
+                )
 
 
 class ImageServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Produce(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Consume(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -37,6 +48,11 @@ def add_ImageServiceServicer_to_server(servicer, server):
                     servicer.Produce,
                     request_deserializer=proto__pb2.ProduceRequest.FromString,
                     response_serializer=proto__pb2.ProduceResponse.SerializeToString,
+            ),
+            'Consume': grpc.unary_unary_rpc_method_handler(
+                    servicer.Consume,
+                    request_deserializer=proto__pb2.ConsumeRequest.FromString,
+                    response_serializer=proto__pb2.ConsumeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +78,22 @@ class ImageService(object):
         return grpc.experimental.unary_unary(request, target, '/ImageService/Produce',
             proto__pb2.ProduceRequest.SerializeToString,
             proto__pb2.ProduceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Consume(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ImageService/Consume',
+            proto__pb2.ConsumeRequest.SerializeToString,
+            proto__pb2.ConsumeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
