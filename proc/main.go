@@ -59,27 +59,6 @@ func newMinio(cfg *config) *minio.Client {
 		log.Fatal(err)
 	}
 
-	//location := "BLR"
-	//ctx := context.Background()
-	//
-	//err = minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
-	//if err != nil {
-	//	exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
-	//	if errBucketExists == nil && exists {
-	//		log.Println("We already own")
-	//	} else {
-	//		log.Fatal(err)
-	//	}
-	//} else {
-	//	log.Println("Successfully created")
-	//}
-	//
-	//err = minioClient.SetBucketPolicy(ctx, bucketName, "public")
-	//if err != nil {
-	//	log.Println(err.Error())
-	//	return nil
-	//}
-
 	return minioClient
 }
 
@@ -163,11 +142,57 @@ func (srv *server) Produce(ctx context.Context, req *pb.ProduceRequest) (*pb.Pro
 	}, nil
 }
 
+func (srv *server) Consume(ctx context.Context, req *pb.ConsumeRequest) (*pb.ConsumeResponse, error) {
+	const img1 = "img1.png"
+	const img2 = "img2.png"
+
+	err := srv.minio.FGetObject(ctx, bucketName, req.Image1, img1, minio.GetObjectOptions{})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	err = srv.minio.FGetObject(ctx, bucketName, req.Image2, img2, minio.GetObjectOptions{})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	resp := &pb.ConsumeResponse{
+		Image1: &pb.Image{},
+		Image2: &pb.Image{},
+	}
+
+	p, err := os.ReadFile(img1)
+	if err != nil {
+		return nil, err
+	}
+	resp.Image1.Value = convertToUint32(p)
+
+	p, err = os.ReadFile(img2)
+	if err != nil {
+		return nil, err
+	}
+	resp.Image2.Value = convertToUint32(p)
+
+	return resp, nil
+}
+
 func convertToBytes(p []uint32) []byte {
 	res := make([]byte, len(p))
 
 	for i, b := range p {
 		res[i] = byte(b)
+	}
+
+	return res
+}
+
+func convertToUint32(p []byte) []uint32 {
+	res := make([]uint32, len(p))
+
+	for i, b := range p {
+		res[i] = uint32(b)
 	}
 
 	return res
