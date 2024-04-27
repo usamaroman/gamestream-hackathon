@@ -74,6 +74,12 @@ func newMinio(cfg *config) *minio.Client {
 		log.Println("Successfully created")
 	}
 
+	err = minioClient.SetBucketPolicy(ctx, bucketName, "public")
+	if err != nil {
+		log.Println(err.Error())
+		return nil
+	}
+
 	return minioClient
 }
 

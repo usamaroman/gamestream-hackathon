@@ -12,8 +12,6 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
 
-    
-
   postgres:
     container_name: postgres
     image: postgres:16-alpine
@@ -42,7 +40,6 @@ services:
         condition: service_healthy
       minio:
         condition: service_started
-
 
   proc:
     container_name: proc
