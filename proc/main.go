@@ -59,26 +59,26 @@ func newMinio(cfg *config) *minio.Client {
 		log.Fatal(err)
 	}
 
-	location := "BLR"
-	ctx := context.Background()
-
-	err = minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
-	if err != nil {
-		exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
-		if errBucketExists == nil && exists {
-			log.Println("We already own")
-		} else {
-			log.Fatal(err)
-		}
-	} else {
-		log.Println("Successfully created")
-	}
-
-	err = minioClient.SetBucketPolicy(ctx, bucketName, "public")
-	if err != nil {
-		log.Println(err.Error())
-		return nil
-	}
+	//location := "BLR"
+	//ctx := context.Background()
+	//
+	//err = minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	//if err != nil {
+	//	exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
+	//	if errBucketExists == nil && exists {
+	//		log.Println("We already own")
+	//	} else {
+	//		log.Fatal(err)
+	//	}
+	//} else {
+	//	log.Println("Successfully created")
+	//}
+	//
+	//err = minioClient.SetBucketPolicy(ctx, bucketName, "public")
+	//if err != nil {
+	//	log.Println(err.Error())
+	//	return nil
+	//}
 
 	return minioClient
 }
