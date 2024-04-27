@@ -39,10 +39,14 @@ async def add_image(thread : int, image: UploadFile = File(), db : AsyncSession 
 
 @app.get("/get_thread/{thread}")
 async def get_thread(thread : int, db : AsyncSession = Depends(get_db)):
-    image = await db.execute(select(Thread).where(Thread.thread == thread))
-    image_name = (image.scalar())
-    image_name = image_name.image
-    return {"images" : [f"http://localhost:9000/images/{image_name}"]}
+    image = await db.execute(select(Thread).where(Thread.thread == thread).order_by(Thread.id.desc()).limit(10))
+    image = image.scalars()
+    if not image:
+        return {"message" : "Thread not found"}
+    image_list = []
+    for x in image:
+        image_list.append(f"http://localhost:9000/images/{x.image}")
+    return {"images" : image_list}
 
     
 
