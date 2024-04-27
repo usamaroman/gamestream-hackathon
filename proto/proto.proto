@@ -13,6 +13,7 @@ enum Status {
 
 service ImageService {
   rpc Produce(ProduceRequest) returns (ProduceResponse) {}
+  rpc Consume(ConsumeRequest) returns (ConsumeResponse) {}
 }
 
 message ProduceRequest {
@@ -22,4 +23,14 @@ message ProduceRequest {
 message ProduceResponse {
   Status status = 1;
   string image = 2;
+}
+
+message ConsumeRequest {
+  string image1 = 1;
+  string image2 = 2;
+}
+
+message ConsumeResponse {
+  Image image1 = 1;
+  Image image2 = 2;
 }

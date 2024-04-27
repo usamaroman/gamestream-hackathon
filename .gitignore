@@ -4,3 +4,4 @@
 venv
 minio-storage
 logs.log
+node_modules
