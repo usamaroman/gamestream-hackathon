@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date, func
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_async_engine("postgresql+asyncpg://user:password@postgres:5432/hackathone")
+engine = create_async_engine("postgresql+asyncpg://user:password@postgres:5432/hackathon")
 
 Base = declarative_base()
 
@@ -17,4 +17,6 @@ async def get_db():
 class Thread(Base):
     __tablename__ = "thread"
     id = Column(Integer, primary_key=True)
+    thread = Column(Integer)
     image = Column(String, nullable=False)
+    created_at = Column(Date, nullable=False, default=func.now())
