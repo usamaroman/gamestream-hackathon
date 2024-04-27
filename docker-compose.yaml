@@ -11,8 +11,8 @@ services:
     environment:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
-    volumes:
-      - ./minio-storage:/data
+
+    
 
   postgres:
     container_name: postgres
@@ -21,11 +21,11 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: hackathone
+      POSTGRES_DB: hackathon
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     healthcheck:
-      test: pg_isready -U user -d hackathone
+      test: pg_isready -U user -d hackathon
       interval: 10s
       timeout: 3s
       retries: 3
