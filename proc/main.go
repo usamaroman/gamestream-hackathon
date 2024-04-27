@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"net"
 	"os"
 
 	"proc/pb"
 
+	"github.com/google/uuid"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -117,6 +117,9 @@ func (srv *server) logInterceptor(ctx context.Context, req interface{}, info *gr
 
 func (srv *server) Produce(ctx context.Context, req *pb.ProduceRequest) (*pb.ProduceResponse, error) {
 	p := req.Img.Value
+
+	log.Println("size", len(p))
+
 	fileName := uuid.New().String() + ".png"
 
 	file, err := os.Create(fileName)
@@ -140,7 +143,7 @@ func (srv *server) Produce(ctx context.Context, req *pb.ProduceRequest) (*pb.Pro
 		return nil, err
 	}
 
-	log.Println("size", info.Size)
+	log.Println("minio size", info.Size)
 
 	err = os.Remove(fileName)
 	if err != nil {
@@ -162,5 +165,4 @@ func convertToBytes(p []uint32) []byte {
 	}
 
 	return res
-
 }
