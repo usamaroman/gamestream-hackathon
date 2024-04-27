@@ -53,15 +53,14 @@ async def get_thread(thread : int, db : AsyncSession = Depends(get_db)):
     return {"images" : image_list}
 
 @app.get("/diff/{image1}/{image2}")
-async def diff(image1 : str, image2 : str, db : AsyncSession = Depends(get_db)):
-    pass
-
-@app.get("/consume/{image1}/{image2}")
-async def consume_images(image1 : str, image2 : str):
+async def diff(image1 : str, image2 : str):
     response : ConsumeResponse = consume(image1, image2)
         
-    difference(bytes(response.image1.value), bytes(response.image2.value))
-    return {"image1" : list(response.image1.value), "image2" : list(response.image2.value)}
+    img = difference(bytes(response.image1.value), bytes(response.image2.value))
+    
+    url = produce(list(img))
+    
+    return {"diff" : url.image}
 
 
 if __name__ == "__main__":
