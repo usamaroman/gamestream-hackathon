@@ -48,7 +48,10 @@ async def get_thread(thread : int, db : AsyncSession = Depends(get_db)):
         image_list.append(f"http://localhost:9000/images/{x.image}")
     return {"images" : image_list}
 
-    
+@app.get("/diff/{image1}/{image2}")
+async def diff(image1 : str, image2 : str, db : AsyncSession = Depends(get_db)):
+    pass
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
