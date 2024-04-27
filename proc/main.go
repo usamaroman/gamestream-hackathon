@@ -84,6 +84,7 @@ func main() {
 
 	pb.RegisterImageServiceServer(rpcSrv, srv)
 
+	log.Println("starting server", cfg.Port)
 	err = rpcSrv.Serve(listener)
 	if err != nil {
 		log.Fatal(err)

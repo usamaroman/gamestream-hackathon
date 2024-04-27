@@ -2,25 +2,29 @@ import grpc
 import uvicorn
 from fastapi import Depends, FastAPI, File, UploadFile
 from proto.proto_pb2_grpc import ImageServiceStub
-from proto.proto_pb2 import Image, ProduceRequest, ProduceResponse
+from proto.proto_pb2 import ConsumeRequest, ConsumeResponse, Image, ProduceRequest, ProduceResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from database import get_db, Thread
-from logger import logger
+from compare import difference
 
 app = FastAPI(debug=True)
 
-client = ImageServiceStub(channel=grpc.insecure_channel("proc:8001"))
+client = ImageServiceStub(channel = grpc.insecure_channel('proc:8001', options=(('grpc.enable_http_proxy', 0),)))
 
 def produce(image : list) -> ProduceResponse:
     return client.Produce(ProduceRequest(img=Image(value=image)))
+
+def consume(img1 : str, img2 : str) -> ConsumeResponse:
+    return client.Consume(ConsumeRequest(image1=img1, image2=img2))
+    
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
 
 @app.post("/create_thread")
-async def add_image(image: UploadFile = File(), db : AsyncSession = Depends(get_db)):
+async def create_thread(image: UploadFile = File(), db : AsyncSession = Depends(get_db)):
     image_name : ProduceResponse = produce(list(await image.read()))
     thread = Thread(image=image_name.image)
     db.add(thread)
@@ -51,6 +55,13 @@ async def get_thread(thread : int, db : AsyncSession = Depends(get_db)):
 @app.get("/diff/{image1}/{image2}")
 async def diff(image1 : str, image2 : str, db : AsyncSession = Depends(get_db)):
     pass
+
+@app.get("/consume/{image1}/{image2}")
+async def consume_images(image1 : str, image2 : str):
+    response : ConsumeResponse = consume(image1, image2)
+        
+    difference(bytes(response.image1.value), bytes(response.image2.value))
+    return {"image1" : list(response.image1.value), "image2" : list(response.image2.value)}
 
 
 if __name__ == "__main__":

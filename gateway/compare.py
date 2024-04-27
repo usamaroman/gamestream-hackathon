@@ -3,7 +3,7 @@ import cv2
 img1 = "img1.png"
 img2 = "img2.png"
 
-def difference(b1: list, b2: list):
+def difference(b1, b2):
     # Open in "wb" mode to
     # write a new file, or
     # "ab" mode to append
