@@ -7,8 +7,27 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 from database import get_db, Thread
 from compare import difference
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+
 
 app = FastAPI(debug=True)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 client = ImageServiceStub(channel = grpc.insecure_channel('proc:8001', options=(('grpc.enable_http_proxy', 0),)))
 
@@ -49,7 +68,7 @@ async def get_thread(thread : int, db : AsyncSession = Depends(get_db)):
         return {"message" : "Thread not found"}
     image_list = []
     for x in image:
-        image_list.append(f"http://localhost:9000/images/{x.image}")
+        image_list.append(x.image)
     return {"images" : image_list}
 
 @app.get("/diff/{image1}/{image2}")
